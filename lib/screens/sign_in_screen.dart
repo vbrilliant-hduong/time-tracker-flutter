@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:timetrackerflutter/components/sign_in_button.dart';
 import 'package:timetrackerflutter/components/social_sign_in_button.dart';
+import 'package:timetrackerflutter/services/auth.dart';
 import '../constants.dart';
 
 class SignInScreen extends StatelessWidget {
+  const SignInScreen({@required this.auth});
+  final AuthBase auth;
+
+  Future<void> _signInAnonymously() async {
+    try {
+      await auth.signInAnonymously();
+    } catch (e){
+      print(e.toString());
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      await auth.signInWithGoogle();
+    } catch (e){
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +62,7 @@ class SignInScreen extends StatelessWidget {
             text: 'Sign In with Google',
             color: Colors.white,
             textColor: Colors.black87,
-            onPressed: () {},
+            onPressed: _signInWithGoogle,
           ),
           SizedBox(
             height: 8.0,
@@ -76,7 +96,7 @@ class SignInScreen extends StatelessWidget {
             text: 'Go Anonymous',
             color: Colors.lime[300],
             textColor: Colors.black,
-            onPressed: () {},
+            onPressed: _signInAnonymously,
           ),
         ],
       ),
