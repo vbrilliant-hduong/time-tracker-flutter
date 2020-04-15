@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:timetrackerflutter/common_widgets/platform_alert_dialog.dart';
 import 'package:timetrackerflutter/components/validators.dart';
 import 'package:timetrackerflutter/services/auth.dart';
 import 'form_submit_button.dart';
@@ -52,7 +55,15 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       }
       Navigator.of(context).pop();
     } catch (e) {
-      print(e.toString());
+      if (Platform.isIOS) {
+        print ('Show cupertino Alert Dialog.');
+      } else {
+        PlatformAlertDialog(
+          title: 'Sign in failed',
+          content: e.toString(),
+          defaultActionText: 'OK',
+        ).show(context);
+      }
     } finally {
       setState(() {
         _isLoading = false;
