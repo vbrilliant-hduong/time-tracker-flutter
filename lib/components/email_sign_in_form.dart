@@ -55,15 +55,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       }
       Navigator.of(context).pop();
     } catch (e) {
-      if (Platform.isIOS) {
-        print ('Show cupertino Alert Dialog.');
-      } else {
-        PlatformAlertDialog(
-          title: 'Sign in failed',
-          content: e.toString(),
-          defaultActionText: 'OK',
-        ).show(context);
-      }
+      PlatformAlertDialog(
+        title: 'Sign in failed',
+        content: e.toString(),
+        defaultActionText: 'OK',
+      ).show(context);
     } finally {
       setState(() {
         _isLoading = false;

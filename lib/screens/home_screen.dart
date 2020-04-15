@@ -4,12 +4,13 @@ import 'package:timetrackerflutter/services/auth.dart';
 
 class HomepageScreen extends StatelessWidget {
   const HomepageScreen({@required this.auth});
+
   final AuthBase auth;
 
   Future<void> _signOut() async {
     try {
       await auth.signOut();
-    } catch (e){
+    } catch (e) {
       print(e.toString());
     }
   }
@@ -21,8 +22,6 @@ class HomepageScreen extends StatelessWidget {
       cancelActionText: 'Cancel',
       defaultActionText: 'Logout',
     ).show(context);
-
-    print('Selected buttton $didRequestSignOut');
 
     if (didRequestSignOut == true) {
       _signOut();
