@@ -1,7 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:timetrackerflutter/common_widgets/platform_alert_dialog.dart';
+import 'package:timetrackerflutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:timetrackerflutter/components/validators.dart';
 import 'package:timetrackerflutter/services/auth.dart';
 import 'form_submit_button.dart';
@@ -9,10 +10,6 @@ import 'form_submit_button.dart';
 enum EmailSignInFormType { SignIn, Register }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  EmailSignInForm({@required this.auth});
-
-  final AuthBase auth;
-
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -39,26 +36,34 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
   void _submit() async {
-    print('submit form!');
     setState(() {
       _submitted = true;
       _isLoading = true;
     });
 
     try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
       //await Future.delayed(Duration(seconds: 5));
       if (_formType == EmailSignInFormType.SignIn) {
-        await widget.auth.signInWithEmailAndPassword(_email, _password);
+        await auth.signInWithEmailAndPassword(_email, _password);
       } else {
-        await widget.auth.createUserWithEmailAndPassword(_email, _password);
+        await auth.createUserWithEmailAndPassword(_email, _password);
       }
       Navigator.of(context).pop();
-    } catch (e) {
-      PlatformAlertDialog(
+    } on PlatformException catch (e) {
+      PlatformExceptionAlertDialog(
         title: 'Sign in failed',
-        content: e.toString(),
-        defaultActionText: 'OK',
+        exception: e,
       ).show(context);
     } finally {
       setState(() {

@@ -11,6 +11,7 @@ class SignInButton extends CustomRaisedButton {
   })  : assert(text != null),
         super(
           color: color,
+          disableColor: true,
           child: Text(
             text,
             style: TextStyle(color: textColor, fontSize: kButtonFontSize),

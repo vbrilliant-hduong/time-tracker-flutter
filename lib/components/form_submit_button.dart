@@ -10,6 +10,7 @@ class FormSubmitButton extends CustomRaisedButton {
   })  : assert(text != null),
         super(
           color: Colors.indigo,
+          disableColor: false,
           child: Text(
             text,
             style: TextStyle(color: textColor, fontSize: kButtonFontSize),

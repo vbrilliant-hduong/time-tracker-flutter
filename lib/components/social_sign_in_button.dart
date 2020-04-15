@@ -24,6 +24,7 @@ class SocialSignInButton extends CustomRaisedButton {
             ],
           ),
           color: color,
+          disableColor: true,
           onPressed: onPressed,
         );
 }
