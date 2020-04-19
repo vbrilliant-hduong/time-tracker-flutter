@@ -6,22 +6,30 @@ import 'package:timetrackerflutter/common_widgets/platform_exception_alert_dialo
 import 'package:timetrackerflutter/components/sign_in_button.dart';
 import 'package:timetrackerflutter/components/social_sign_in_button.dart';
 import 'package:timetrackerflutter/screens/email_sign_in_screen.dart';
-import 'package:timetrackerflutter/screens/sign_in_bloc.dart';
+import 'package:timetrackerflutter/screens/sign_in_manager.dart';
 import 'package:timetrackerflutter/services/auth.dart';
 import '../constants.dart';
 
 class SignInScreen extends StatelessWidget {
-  const SignInScreen({this.bloc});
+  const SignInScreen({
+    @required this.manager,
+    @required this.isLoading,
+  });
 
-  final SignInBloc bloc;
+  final SignInManager manager;
+  final bool isLoading;
 
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
-    return Provider<SignInBloc>(
-      create: (_) => SignInBloc(auth: auth),
-      dispose: (context, bloc) => bloc.dispose(),
-      child: Consumer<SignInBloc>(
-        builder: (context, bloc, _) => SignInScreen(bloc: bloc),
+    return ChangeNotifierProvider<ValueNotifier<bool>>(
+      create: (_) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (_, isLoading, __) => Provider<SignInManager>(
+          create: (_) => SignInManager(auth: auth, isLoading: isLoading),
+          child: Consumer<SignInManager>(
+            builder: (context, manager, _) => SignInScreen(manager: manager, isLoading: isLoading.value,),
+          ),
+        ),
       ),
     );
   }
@@ -35,7 +43,7 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      await bloc.signInAnonymously();
+      await manager.signInAnonymously();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -45,7 +53,7 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      await bloc.signInWithGoogle();
+      await manager.signInWithGoogle();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -55,7 +63,7 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      await bloc.signInWithFacebook();
+      await manager.signInWithFacebook();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -77,17 +85,12 @@ class SignInScreen extends StatelessWidget {
         title: Text('Time Tracker'),
         elevation: 2.0,
       ),
-      body: StreamBuilder<bool>(
-          stream: bloc.isLoadingStream,
-          initialData: false,
-          builder: (context, snapshot) {
-            return _buildContent(context, snapshot.data);
-          }),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context, bool isLoading) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -96,7 +99,7 @@ class SignInScreen extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 50.0,
-            child: _buildHeader(isLoading),
+            child: _buildHeader(),
           ),
           SizedBox(
             height: 16.0,
@@ -147,7 +150,7 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
