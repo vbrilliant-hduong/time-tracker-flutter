@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:timetrackerflutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:timetrackerflutter/components/sign_in_button.dart';
 import 'package:timetrackerflutter/components/social_sign_in_button.dart';
-import 'package:timetrackerflutter/screens/email_sign_in_screen.dart';
-import 'package:timetrackerflutter/screens/sign_in_manager.dart';
+import 'package:timetrackerflutter/sign_in/email_sign_in_screen.dart';
+import 'package:timetrackerflutter/sign_in/sign_in_manager.dart';
 import 'package:timetrackerflutter/services/auth.dart';
 import '../constants.dart';
 
@@ -20,16 +20,18 @@ class SignInScreen extends StatelessWidget {
   final bool isLoading;
 
   static Widget create(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     return ChangeNotifierProvider<ValueNotifier<bool>>(
       create: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(
-        builder: (_, isLoading, __) => Provider<SignInManager>(
-          create: (_) => SignInManager(auth: auth, isLoading: isLoading),
-          child: Consumer<SignInManager>(
-            builder: (context, manager, _) => SignInScreen(manager: manager, isLoading: isLoading.value,),
-          ),
-        ),
+        builder: (_, isLoading, __) =>
+            Provider<SignInManager>(
+              create: (_) => SignInManager(auth: auth, isLoading: isLoading),
+              child: Consumer<SignInManager>(
+                builder: (context, manager, _) =>
+                    SignInScreen(manager: manager, isLoading: isLoading.value,),
+              ),
+            ),
       ),
     );
   }

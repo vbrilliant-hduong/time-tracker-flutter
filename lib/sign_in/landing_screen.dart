@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timetrackerflutter/screens/sign_in_screen.dart';
+import 'package:timetrackerflutter/services/database.dart';
+import 'package:timetrackerflutter/sign_in/sign_in_screen.dart';
 import 'package:timetrackerflutter/services/auth.dart';
-import 'home_screen.dart';
+import '../home/jobs/jobs_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   @override
@@ -16,7 +17,9 @@ class LandingScreen extends StatelessWidget {
           if (user == null) {
             return SignInScreen.create(context);
           }
-          return HomepageScreen();
+          return Provider<Database>(
+              create: (_) => FirestoreDatabase(uid: user.uid),
+              child: JobsScreen());
         } else {
           return Scaffold(
             body: Center(

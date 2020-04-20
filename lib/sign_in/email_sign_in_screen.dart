@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:timetrackerflutter/screens/email_sign_in_form_bloc_based.dart';
-import 'package:timetrackerflutter/screens/email_sign_in_form_change_notifier.dart';
+import 'package:timetrackerflutter/sign_in/email_sign_in_form_change_notifier.dart';
 
 class EmailSignInScreen extends StatelessWidget {
   @override

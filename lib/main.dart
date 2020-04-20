@@ -1,7 +1,7 @@
 import 'constants.dart';
 import 'package:flutter/material.dart';
-import 'package:timetrackerflutter/screens/landing_screen.dart';
 import 'package:timetrackerflutter/services/auth.dart';
+import 'package:timetrackerflutter/sign_in/landing_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(TimeTracker());

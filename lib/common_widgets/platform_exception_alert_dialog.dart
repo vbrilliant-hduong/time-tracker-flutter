@@ -13,6 +13,10 @@ class PlatformExceptionAlertDialog extends PlatformAlertDialog {
         );
 
   static String _message (PlatformException exception) {
+    print(exception);
+    if (exception.code == 'Error performing setData') {
+        return 'Missing or insufficient permissions!';
+    }
     return _errors[exception.code] ?? exception.message;
   }
 
